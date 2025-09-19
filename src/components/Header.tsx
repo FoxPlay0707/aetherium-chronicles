@@ -141,6 +141,12 @@ const Header = () => {
         )}
       </div>
 
+      {/* Floating particles */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="floating-particles" style={{ left: '10%', top: '20%', animationDelay: '0s' }} />
+        <div className="floating-particles" style={{ left: '85%', top: '60%', animationDelay: '2s' }} />
+        <div className="floating-particles" style={{ left: '60%', top: '10%', animationDelay: '4s' }} />
+      </div>
     </header>
   );
 };
