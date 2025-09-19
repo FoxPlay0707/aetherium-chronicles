@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Menu, X, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import aetheriumLogo from "@/assets/aetherium-logo.png";
+import telegramIcon from "@/assets/telegram-icon.png";
+import youtubeIcon from "@/assets/youtube-icon.png";
+import tiktokIcon from "@/assets/tiktok-icon.png";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,17 +17,17 @@ const Header = () => {
     {
       name: "Telegram",
       url: "https://t.me/Aetherium_server",
-      icon: "📱"
+      icon: telegramIcon
     },
     {
       name: "TikTok", 
       url: "https://www.tiktok.com/@aetherium_private?_t=ZM-8zrVpQs56Ro&_r=1",
-      icon: "🎵"
+      icon: tiktokIcon
     },
     {
       name: "YouTube",
       url: "https://youtube.com/@aetherium_private?si=gG6vb288d1hmvfGQ",
-      icon: "🎬"
+      icon: youtubeIcon
     }
   ];
 
@@ -122,7 +125,11 @@ const Header = () => {
                       rel="noopener noreferrer"
                       className="flex items-center space-x-3 text-foreground hover:text-primary transition-colors duration-300 py-2"
                     >
-                      <span className="text-xl">{social.icon}</span>
+                      <img 
+                        src={social.icon} 
+                        alt={`${social.name} icon`}
+                        className="w-5 h-5"
+                      />
                       <span>{social.name}</span>
                       <ExternalLink className="w-4 h-4 ml-auto" />
                     </a>

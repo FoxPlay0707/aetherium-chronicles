@@ -1,23 +1,26 @@
 import { ExternalLink } from "lucide-react";
+import telegramIcon from "@/assets/telegram-icon.png";
+import youtubeIcon from "@/assets/youtube-icon.png";
+import tiktokIcon from "@/assets/tiktok-icon.png";
 
 const SocialLinks = () => {
   const socialLinks = [
     {
       name: "Telegram канал",
       url: "https://t.me/Aetherium_server",
-      icon: "📱",
+      icon: telegramIcon,
       description: "Новости и обновления сервера"
     },
     {
       name: "TikTok",
       url: "https://www.tiktok.com/@aetherium_private?_t=ZM-8zrVpQs56Ro&_r=1",
-      icon: "🎵",
+      icon: tiktokIcon,
       description: "Короткие видео и моменты игры"
     },
     {
       name: "YouTube",
       url: "https://youtube.com/@aetherium_private?si=gG6vb288d1hmvfGQ",
-      icon: "🎬",
+      icon: youtubeIcon,
       description: "Полные записи и трейлеры"
     }
   ];
@@ -43,8 +46,12 @@ const SocialLinks = () => {
               rel="noopener noreferrer"
               className="crystal-card p-8 text-center hover:scale-105 transition-all duration-300 group"
             >
-              <div className="text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                {social.icon}
+              <div className="mb-4 group-hover:scale-110 transition-transform duration-300">
+                <img 
+                  src={social.icon} 
+                  alt={`${social.name} icon`}
+                  className="w-16 h-16 mx-auto"
+                />
               </div>
               <h3 className="text-xl font-semibold text-foreground mb-2 flex items-center justify-center">
                 {social.name}
