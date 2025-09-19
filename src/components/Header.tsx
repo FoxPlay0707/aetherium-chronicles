@@ -42,7 +42,7 @@ const Header = () => {
               alt="Aetherium Logo" 
               className="h-12 w-auto animate-glow"
             />
-            <span className="text-2xl font-bold magic-text hidden sm:block">
+            <span className="text-2xl font-bold magic-text">
               AETHERIUM
             </span>
           </Link>
