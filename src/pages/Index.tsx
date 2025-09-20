@@ -1,7 +1,7 @@
-import Header from "@/components/Header";
-import Hero from "@/components/Hero";
-import SeasonInfo from "@/components/SeasonInfo";
-import SocialLinks from "@/components/SocialLinks";
+import Header from "@/components/layout/Header";
+import Hero from "@/components/sections/Hero";
+import SeasonInfo from "@/components/sections/SeasonInfo";
+import SocialLinks from "@/components/sections/SocialLinks";
 
 const Index = () => {
   return (

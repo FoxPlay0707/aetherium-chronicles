@@ -1,5 +1,5 @@
 import { Shield, Users, Coins, UserCheck, FileText } from "lucide-react";
-import Header from "@/components/Header";
+import Header from "@/components/layout/Header";
 
 const Rules = () => {
   const rulesSections = [
