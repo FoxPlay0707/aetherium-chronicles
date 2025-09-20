@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+    
+    <title>Aetherium - Приватный сервер Minecraft</title>
+    <meta name="description" content="Aetherium - уникальный приватный сервер Minecraft с сезонной системой, кланами и эксклюзивными ивентами. Подайте заявку и станьте частью магического мира!" />
+    <meta name="author" content="Aetherium Server" />
+    <meta name="keywords" content="minecraft, сервер, приватный, aetherium, кланы, сезоны, межсезонье, рп, roleplay" />
+
+    <meta property="og:title" content="Aetherium - Приватный сервер Minecraft" />
+    <meta property="og:description" content="Уникальный приватный сервер Minecraft с сезонной системой и эксклюзивными ивентами" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@lovable_dev" />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background: 220 27% 8%;
+            --foreground: 60 9.1% 97.8%;
+            --primary: 47 100% 68%;
+            --primary-foreground: 0 0% 0%;
+            --secondary: 260 100% 80%;
+            --secondary-foreground: 0 0% 0%;
+            --muted: 220 14.3% 25.9%;
+            --muted-foreground: 220 8.9% 46.1%;
+            --border: 220 13% 18%;
+            --input: 220 13% 18%;
+            --ring: 47 100% 68%;
+            --crystal-glow: 200 100% 70%;
+            --gold: 47 100% 68%;
+            --deep-blue: 220 27% 8%;
+            --gradient-primary: linear-gradient(135deg, hsl(220, 27%, 8%) 0%, hsl(230, 35%, 12%) 50%, hsl(240, 50%, 18%) 100%);
+            --gradient-crystal: linear-gradient(135deg, rgba(135, 206, 235, 0.1) 0%, rgba(138, 43, 226, 0.1) 100%);
+            --gradient-gold: linear-gradient(135deg, hsl(47, 100%, 68%) 0%, hsl(45, 90%, 60%) 100%);
+            --crystal-shadow: 0 8px 32px rgba(135, 206, 235, 0.3);
+            --gold-shadow: 0 8px 32px rgba(255, 215, 0, 0.4);
+            --magic-overlay: radial-gradient(circle at 20% 80%, rgba(138, 43, 226, 0.1) 0%, transparent 50%), 
+                           radial-gradient(circle at 80% 20%, rgba(135, 206, 235, 0.1) 0%, transparent 50%);
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--gradient-primary);
+            color: hsl(var(--foreground));
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--magic-overlay);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            transition: transform 0.3s;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-img {
+            height: 2.5rem;
+            width: auto;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: bold;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav {
+            display: none;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: hsl(var(--foreground));
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: hsl(var(--primary));
+        }
+
+        .mobile-menu-btn {
+            display: block;
+            background: none;
+            border: none;
+            color: hsl(var(--foreground));
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .mobile-nav {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(148, 163, 184, 0.1);
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .mobile-nav.active {
+            display: flex;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 5rem;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .hero-content {
+            max-width: 64rem;
+            margin: 0 auto;
+        }
+
+        .hero-logo {
+            margin-bottom: 2rem;
+        }
+
+        .hero-logo-img {
+            height: 8rem;
+            width: auto;
+            margin: 0 auto;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: hsl(var(--muted-foreground));
+            margin-bottom: 2rem;
+            max-width: 32rem;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: scale(1.05);
+        }
+
+        .feature-icon {
+            width: 2rem;
+            height: 2rem;
+            color: hsl(var(--primary));
+            margin: 0 auto 0.75rem;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            color: hsl(var(--foreground));
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-description {
+            font-size: 0.875rem;
+            color: hsl(var(--muted-foreground));
+        }
+
+        .cta-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-gold {
+            background: var(--gradient-gold);
+            color: hsl(var(--primary-foreground));
+            box-shadow: var(--gold-shadow);
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(255, 215, 0, 0.5);
+        }
+
+        .btn-crystal {
+            background: rgba(15, 23, 42, 0.6);
+            color: hsl(var(--foreground));
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            backdrop-filter: blur(16px);
+        }
+
+        .btn-crystal:hover {
+            transform: translateY(-2px);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .hero-note {
+            font-size: 0.875rem;
+            color: hsl(var(--muted-foreground));
+            margin-top: 2rem;
+        }
+
+        /* Season Info Section */
+        .season-info {
+            padding: 5rem 0;
+        }
+
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            font-size: 1.25rem;
+            color: hsl(var(--muted-foreground));
+            max-width: 48rem;
+            margin: 0 auto;
+        }
+
+        .season-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .season-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            transition: transform 0.3s;
+        }
+
+        .season-card:hover {
+            transform: scale(1.05);
+        }
+
+        .season-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .season-icon {
+            width: 2rem;
+            height: 2rem;
+            margin-right: 0.75rem;
+        }
+
+        .season-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: hsl(var(--foreground));
+        }
+
+        .season-list {
+            list-style: none;
+        }
+
+        .season-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+            color: hsl(var(--muted-foreground));
+        }
+
+        .season-bullet {
+            color: hsl(var(--primary));
+            margin-right: 0.5rem;
+        }
+
+        .rewards-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .rewards-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .rewards-title {
+            font-size: 1.875rem;
+            font-weight: bold;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .rewards-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .reward-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .reward-icon {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .reward-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: hsl(var(--foreground));
+        }
+
+        .reward-description {
+            color: hsl(var(--muted-foreground));
+        }
+
+        /* Social Links */
+        .social-section {
+            padding: 5rem 0;
+            text-align: center;
+        }
+
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .social-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: hsl(var(--foreground));
+            transition: transform 0.3s;
+        }
+
+        .social-card:hover {
+            transform: scale(1.05);
+        }
+
+        .social-icon {
+            width: 3rem;
+            height: 3rem;
+            margin: 0 auto 1rem;
+        }
+
+        .social-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Animations */
+        @keyframes glow {
+            0% { filter: drop-shadow(0 0 10px hsl(var(--primary))); }
+            100% { filter: drop-shadow(0 0 20px hsl(var(--primary))); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(180deg); }
+        }
+
+        .floating-particles {
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, hsl(var(--primary)) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .nav {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: none;
+            }
+
+            .hero-title {
+                font-size: 4.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.5rem;
+            }
+
+            .hero-logo-img {
+                height: 12rem;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .cta-buttons {
+                flex-direction: row;
+            }
+
+            .season-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .rewards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .rules-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 8rem 1.5rem 4rem;
+        }
+
+        .rules-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .rules-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .rules-section {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .rules-section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .rules-icon {
+            width: 2rem;
+            height: 2rem;
+            color: hsl(var(--primary));
+            margin-right: 0.75rem;
+        }
+
+        .rules-section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: hsl(var(--foreground));
+        }
+
+        .rules-list {
+            list-style: none;
+        }
+
+        .rules-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            color: hsl(var(--muted-foreground));
+            line-height: 1.6;
+        }
+
+        .rules-number {
+            color: hsl(var(--primary));
+            font-weight: bold;
+            margin-right: 0.75rem;
+            min-width: 1.5rem;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo" onclick="showPage('home')">
+                <img src="src/assets/aetherium-logo.png" alt="Aetherium Server Logo" class="logo-img">
+                <span class="logo-text">AETHERIUM</span>
+            </a>
+
+            <nav class="nav">
+                <a href="#" class="nav-link" onclick="showPage('home')">Главная</a>
+                <a href="#" class="nav-link" onclick="showPage('rules')">Правила</a>
+            </nav>
+
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <span id="menu-icon">☰</span>
+            </button>
+        </div>
+
+        <nav class="mobile-nav" id="mobile-nav">
+            <a href="#" class="nav-link" onclick="showPage('home'); toggleMobileMenu()">Главная</a>
+            <a href="#" class="nav-link" onclick="showPage('rules'); toggleMobileMenu()">Правила</a>
+        </nav>
+    </header>
+
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <!-- Floating Particles -->
+        <div class="floating-particles" style="left: 10%; top: 20%; animation-delay: 0s;"></div>
+        <div class="floating-particles" style="left: 20%; top: 80%; animation-delay: 1s;"></div>
+        <div class="floating-particles" style="left: 80%; top: 30%; animation-delay: 2s;"></div>
+        <div class="floating-particles" style="left: 70%; top: 70%; animation-delay: 3s;"></div>
+        <div class="floating-particles" style="left: 30%; top: 50%; animation-delay: 4s;"></div>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <div class="hero-logo">
+                        <img src="src/assets/aetherium-logo.png" alt="Aetherium Server Logo" class="hero-logo-img">
+                    </div>
+
+                    <h1 class="hero-title">AETHERIUM</h1>
+                    
+                    <p class="hero-subtitle">
+                        Приватный сервер Minecraft с уникальной сезонной системой
+                    </p>
+
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">📅</div>
+                            <h3 class="feature-title">Сезонная система</h3>
+                            <p class="feature-description">6 месяцев игры + 1 месяц межсезонья</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">👥</div>
+                            <h3 class="feature-title">Кланы и города</h3>
+                            <p class="feature-description">Создавайте альянсы и стройте империи</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🔗</div>
+                            <h3 class="feature-title">Уникальные ивенты</h3>
+                            <p class="feature-description">Эксклюзивные приключения каждый сезон</p>
+                        </div>
+                    </div>
+
+                    <div class="cta-buttons">
+                        <a href="https://forms.gle/6DjRB2uywYb2P5C26" target="_blank" class="btn btn-gold">
+                            <span>Подать заявку на сервер</span>
+                            <span>🔗</span>
+                        </a>
+                        <a href="https://t.me/Aetherium_server" target="_blank" class="btn btn-crystal">
+                            <span>📱</span>
+                            <span>Telegram канал</span>
+                        </a>
+                    </div>
+
+                    <p class="hero-note">
+                        Для входа на сервер необходимо заполнить анкету и дождаться одобрения
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Season Info Section -->
+        <section class="season-info">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2 class="section-title">Сезонная система Aetherium</h2>
+                    <p class="section-subtitle">
+                        Каждые 6 месяцев — новый сезон с уникальной темой, стилем и атмосферой
+                    </p>
+                </div>
+
+                <div class="season-grid">
+                    <div class="season-card">
+                        <div class="season-header">
+                            <div class="season-icon">📅</div>
+                            <h3 class="season-title">Сезон (6 месяцев)</h3>
+                        </div>
+                        <ul class="season-list">
+                            <li class="season-item">
+                                <span class="season-bullet">•</span>
+                                Основной мир с полным развитием
+                            </li>
+                            <li class="season-item">
+                                <span class="season-bullet">•</span>
+                                Кланы и территории
+                            </li>
+                            <li class="season-item">
+                                <span class="season-bullet">•</span>
+                                Уникальные ивенты и лор
+                            </li>
+                            <li class="season-item">
+                                <span class="season-bullet">•</span>
+                                Своя тема и визуальный стиль
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="season-card">
+                        <div class="season-header">
+                            <div class="season-icon">✨</div>
+                            <h3 class="season-title">Межсезонье (1 месяц)</h3>
+                        </div>
+                        <ul class="season-list">
+                            <li class="season-item">
+                                <span class="season-bullet" style="color: hsl(var(--secondary))">•</span>
+                                Временное приключение для всех
+                            </li>
+                            <li class="season-item">
+                                <span class="season-bullet" style="color: hsl(var(--secondary))">•</span>
+                                Новая уникальная идея каждый раз
+                            </li>
+                            <li class="season-item">
+                                <span class="season-bullet" style="color: hsl(var(--secondary))">•</span>
+                                Мини-режимы, которых нигде нет
+                            </li>
+                            <li class="season-item">
+                                <span class="season-bullet" style="color: hsl(var(--secondary))">•</span>
+                                Неповторяющиеся концепции
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="rewards-card">
+                    <div class="rewards-header">
+                        <div class="season-icon">🏆</div>
+                        <h3 class="rewards-title">Награды и признание</h3>
+                    </div>
+                    <div class="rewards-grid">
+                        <div class="reward-item">
+                            <div class="reward-icon">👥</div>
+                            <h4 class="reward-title">Участникам межсезоний</h4>
+                            <p class="reward-description">
+                                Редкие награды, титулы и предметы для использования в следующем сезоне
+                            </p>
+                        </div>
+                        <div class="reward-item">
+                            <div class="reward-icon">🏆</div>
+                            <h4 class="reward-title">Героям сервера</h4>
+                            <p class="reward-description">
+                                Самые активные игроки будут увековечены в истории Aetherium
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Social Links -->
+        <section class="social-section">
+            <div class="section-container">
+                <h2 class="section-title">Присоединяйся к сообществу</h2>
+                <div class="social-grid">
+                    <a href="https://t.me/Aetherium_server" target="_blank" class="social-card">
+                        <img src="src/assets/telegram-icon.png" alt="Telegram" class="social-icon">
+                        <h3 class="social-title">Telegram</h3>
+                        <p class="reward-description">Новости и обновления</p>
+                    </a>
+                    <a href="#" class="social-card">
+                        <img src="src/assets/youtube-icon.png" alt="YouTube" class="social-icon">
+                        <h3 class="social-title">YouTube</h3>
+                        <p class="reward-description">Видео и стримы</p>
+                    </a>
+                    <a href="#" class="social-card">
+                        <img src="src/assets/tiktok-icon.png" alt="TikTok" class="social-icon">
+                        <h3 class="social-title">TikTok</h3>
+                        <p class="reward-description">Короткие видео</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Rules Page -->
+    <div id="rules" class="page">
+        <div class="rules-content">
+            <div class="rules-header">
+                <h1 class="rules-title">Правила сервера Aetherium</h1>
+                <p class="section-subtitle">
+                    Соблюдение правил обязательно для всех игроков сервера
+                </p>
+            </div>
+
+            <div class="rules-section">
+                <div class="rules-section-header">
+                    <div class="rules-icon">🛡️</div>
+                    <h2 class="rules-section-title">Основные правила</h2>
+                </div>
+                <ul class="rules-list">
+                    <li class="rules-item">
+                        <span class="rules-number">1.</span>
+                        Уважение к другим игрокам - основа нашего сообщества. Запрещены оскорбления, угрозы и любые формы дискриминации.
+                    </li>
+                    <li class="rules-item">
+                        <span class="rules-number">2.</span>
+                        Использование читов, багов или эксплойтов строго запрещено и наказывается перманентным баном.
+                    </li>
+                    <li class="rules-item">
+                        <span class="rules-number">3.</span>
+                        Запрещен спам, флуд и реклама в чате. Общение должно быть конструктивным и по теме.
+                    </li>
+                    <li class="rules-item">
+                        <span class="rules-number">4.</span>
+                        Грифинг чужих построек без разрешения владельца запрещен. Уважайте чужой труд.
+                    </li>
+                    <li class="rules-item">
+                        <span class="rules-number">5.</span>
+                        Обход бана любыми способами приводит к увеличению срока наказания.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="rules-section">
+                <div class="rules-section-header">
+                    <div class="rules-icon">👥</div>
+                    <h2 class="rules-section-title">Кланы и территории</h2>
+                </div>
+                <ul class="rules-list">
+                    <li class="rules-item">
+                        <span class="rules-number">1.</span>
+                        Каждый игрок может состоять только в одном клане одновременно.
+                    </li>
+                    <li class="rules-item">
+                        <span class="rules-number">2.</span>
+                        Территория клана должна быть четко обозначена и не пересекаться с чужими владениями.
+                    </li>
+                    <li class="rules-item">
+                        <span class="rules-number">3.</span>
+                        Конфликты между кланами должны решаться мирным путем или через администрацию.
+                    </li>
+                    <li class="rules-item">
+                        <span class="rules-number">4.</span>
+                        Создание клана требует минимум 3 участников и одобрения администрации.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="rules-section">
+                <div class="rules-section-header">
+                    <div class="rules-icon">💰</div>
+                    <h2 class="rules-section-title">Экономика и торговля</h2>
+                </div>
+                <ul class="rules-list">
+                    <li class="rules-item">
+                        <span class="rules-number">1.</span>
+                        Честная торговля - основа экономики сервера. Обман в сделках наказывается.
+                    </li>
+                    <li class="rules-item">
+                        <span class="rules-number">2.</span>
+                        Дюпинг предметов или валюты строго запрещен.
+                    </li>
+                    <li class="rules-item">
+                        <span class="rules-number">3.</span>
+                        Все крупные сделки рекомендуется проводить через администрацию.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="rules-section">
+                <div class="rules-section-header">
+                    <div class="rules-icon">✅</div>
+                    <h2 class="rules-section-title">Процедура подачи заявки</h2>
+                </div>
+                <ul class="rules-list">
+                    <li class="rules-item">
+                        <span class="rules-number">1.</span>
+                        Заполните анкету по ссылке на главной странице честно и подробно.
+                    </li>
+                    <li class="rules-item">
+                        <span class="rules-number">2.</span>
+                        Дождитесь рассмотрения заявки (обычно 1-3 дня).
+                    </li>
+                    <li class="rules-item">
+                        <span class="rules-number">3.</span>
+                        При одобрении вы получите приглашение в Telegram-канал сервера.
+                    </li>
+                    <li class="rules-item">
+                        <span class="rules-number">4.</span>
+                        Повторная подача заявки возможна через месяц после отказа.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="rules-section">
+                <div class="rules-section-header">
+                    <div class="rules-icon">📋</div>
+                    <h2 class="rules-section-title">Дополнительная информация</h2>
+                </div>
+                <ul class="rules-list">
+                    <li class="rules-item">
+                        <span class="rules-number">1.</span>
+                        Администрация оставляет за собой право изменять правила по мере необходимости.
+                    </li>
+                    <li class="rules-item">
+                        <span class="rules-number">2.</span>
+                        Незнание правил не освобождает от ответственности.
+                    </li>
+                    <li class="rules-item">
+                        <span class="rules-number">3.</span>
+                        При возникновении спорных ситуаций обращайтесь к администрации.
+                    </li>
+                    <li class="rules-item">
+                        <span class="rules-number">4.</span>
+                        Решение администрации является окончательным.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let mobileMenuOpen = false;
+
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobile-nav');
+            const menuIcon = document.getElementById('menu-icon');
+            
+            mobileMenuOpen = !mobileMenuOpen;
+            
+            if (mobileMenuOpen) {
+                mobileNav.classList.add('active');
+                menuIcon.textContent = '✕';
+            } else {
+                mobileNav.classList.remove('active');
+                menuIcon.textContent = '☰';
+            }
+        }
+
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Close mobile menu if open
+            if (mobileMenuOpen) {
+                toggleMobileMenu();
+            }
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const mobileNav = document.getElementById('mobile-nav');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            
+            if (mobileMenuOpen && !mobileNav.contains(event.target) && !menuBtn.contains(event.target)) {
+                toggleMobileMenu();
+            }
+        });
+    </script>
+</body>
+</html>
